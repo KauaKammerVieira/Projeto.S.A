@@ -1,5 +1,6 @@
 import "../components/styles/home.css";
 import { useNavigate } from "react-router-dom";
+import { FaComments } from "react-icons/fa";
 
 
 function Home({ onNavigate }) {
@@ -12,7 +13,16 @@ function Home({ onNavigate }) {
         <button onClick={() => navigate("/")}>
           Sair
         </button>
+            <div>
+      <h1>Home</h1>
+
+      <button onClick={() => navigate("/chat")}>
+        <FaComments />
+        Abrir Chat
+      </button>
+    </div>
       </header>
+      
 
       <div className="home-content">
         <h2>Bem-vindo ao sistema</h2>
