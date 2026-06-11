@@ -1,0 +1,32 @@
+.question-card {
+  width: 100%;
+}
+
+.question-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.question-card__pergunta {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e2a4a;
+}
+
+.question-card__nivel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: #1e2a4a;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.question-card__opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

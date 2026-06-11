@@ -1,52 +1,56 @@
-import "../components/styles/home.css";
 import { useNavigate } from "react-router-dom";
-import { FaComments } from "react-icons/fa";
+import Header from "../components/Header/header";
+import Sidebar from "../components/Sidebar/Sidebar";
+import Card from "../components/Cards/Card";
+import Button from "../components/Button/Button";
+import "../components/styles/home.css";
 
+const aulas = [
+  { titulo: "Aula: Introdução ao HTML", duracao: "15 min" },
+  { titulo: "Aula: Tags HTML", duracao: "25 min" },
+];
 
-function Home({ onNavigate }) {
-     const navigate = useNavigate();
+export default function Home() {
+  const navigate = useNavigate();
+
   return (
     <div className="home">
-      <header className="home-header">
-        <h1>Home</h1>
+      <Header />
+      <Sidebar />
 
-        <button onClick={() => navigate("/")}>
-          Sair
-        </button>
-            <div>
-      <h1>Home</h1>
+      <main className="home__content">
+        <div className="home__grid">
 
-      <button onClick={() => navigate("/chat")}>
-        <FaComments />
-        Abrir Chat
-      </button>
-    </div>
-      </header>
-      
+          {/* Card: O que estudar hoje */}
+          <Card>
+            <h2 className="home__card-title">O que estudar hoje</h2>
+            <div className="home__aulas">
+              {aulas.map((aula, i) => (
+                <div key={i} className="home__aula-item">
+                  <div>
+                    <p className="home__aula-nome">{aula.titulo}</p>
+                    <p className="home__aula-duracao">Duração: {aula.duracao}</p>
+                  </div>
+                  <Button variant="primary">Assistir Aula</Button>
+                </div>
+              ))}
+            </div>
+          </Card>
 
-      <div className="home-content">
-        <h2>Bem-vindo ao sistema</h2>
-        <p>Login realizado com sucesso.</p>
+          {/* Card: Mentoria IA */}
+          <Card>
+            <h2 className="home__card-title">Mentoria IA</h2>
+            <p className="home__mentoria-texto">Precisa de ajuda?</p>
+            <Button
+              variant="outline"
+              onClick={() => navigate("/chat")}
+            >
+              Falar com a mentoria IA
+            </Button>
+          </Card>
 
-        <div className="cards">
-          <div className="card">
-            <h3>Produtos</h3>
-            <p>Gerenciar produtos</p>
-          </div>
-
-          <div className="card">
-            <h3>Usuários</h3>
-            <p>Gerenciar usuários</p>
-          </div>
-
-          <div className="card">
-            <h3>Pedidos</h3>
-            <p>Gerenciar pedidos</p>
-          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
-
-export default Home;

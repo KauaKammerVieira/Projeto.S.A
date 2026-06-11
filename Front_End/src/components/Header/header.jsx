@@ -1,9 +1,18 @@
+import { useNavigate } from "react-router-dom";
 import "./header.css";
 
 export default function Header() {
+  const navigate = useNavigate();
+
+  const handleSair = () => {
+    navigate("/");
+  };
+
   return (
     <header className="header">
-      <img src="https://img.freepik.com/vetores-premium/modelo-de-logotipo-de-robos-de-ia-modernos_558890-453.jpg" alt="Mentor IA+" className="header-logo" />
+      <button className="header__sair" onClick={handleSair}>
+        Sair
+      </button>
     </header>
   );
 }

@@ -1,8 +1,28 @@
 .header {
+  background: #1e2a4a;
+  height: 56px;
   display: flex;
-  justify-content: center;
-  padding: 24px 0 16px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 32px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
-.header-logo {
-  height: 110px;
+
+.header__sair {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 6px 14px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.header__sair:hover {
+  background: rgba(255, 255, 255, 0.1);
 }

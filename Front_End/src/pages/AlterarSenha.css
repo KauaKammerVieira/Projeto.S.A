@@ -1,0 +1,38 @@
+.alterar-senha-page { display: flex; flex-direction: column; min-height: 100vh; }
+.alterar-senha-page__content {
+  margin-left: 220px;
+  margin-top: 56px;
+  padding: 32px;
+  background: #f5f6fa;
+  min-height: calc(100vh - 56px);
+}
+.alterar-senha-page__title {
+  font-size: 1.125rem; font-weight: 600;
+  color: #1e2a4a;
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 24px;
+}
+.alterar-senha-page__card { max-width: 640px; }
+.alterar-senha-page__user-info {
+  display: flex; align-items: center; gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f3f4f6;
+  margin-bottom: 20px;
+}
+.alterar-senha-page__user-email { font-size: 0.875rem; color: #6b7280; }
+.alterar-senha-page__form-title {
+  font-size: 1rem; font-weight: 600; color: #1e2a4a; margin-bottom: 16px;
+}
+.alterar-senha-page__row {
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+.alterar-senha-page__field-label {
+  font-size: 0.875rem; color: #6b7280; min-width: 110px;
+}
+.alterar-senha-page__acoes {
+  display: flex; justify-content: flex-end;
+  gap: 12px; margin-top: 24px;
+}

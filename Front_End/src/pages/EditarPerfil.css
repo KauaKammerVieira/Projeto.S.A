@@ -1,0 +1,47 @@
+.editar-perfil-page { display: flex; flex-direction: column; min-height: 100vh; }
+.editar-perfil-page__content {
+  margin-left: 220px;
+  margin-top: 56px;
+  padding: 32px;
+  background: #f5f6fa;
+  min-height: calc(100vh - 56px);
+}
+.editar-perfil-page__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e2a4a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.back-btn {
+  background: none; border: none; font-size: 1.5rem;
+  cursor: pointer; color: #374151; line-height: 1;
+}
+.editar-perfil-page__card { max-width: 640px; }
+.editar-perfil-page__user-info {
+  display: flex; align-items: center; gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f3f4f6;
+  margin-bottom: 20px;
+}
+.editar-perfil-page__user-name { font-weight: 600; font-size: 1rem; color: #111827; }
+.editar-perfil-page__user-email { font-size: 0.875rem; color: #6b7280; }
+.editar-perfil-page__form-title {
+  font-size: 1rem; font-weight: 600; color: #1e2a4a; margin-bottom: 16px;
+}
+.editar-perfil-page__row {
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+.editar-perfil-page__field-label {
+  font-size: 0.875rem; color: #6b7280;
+  min-width: 80px;
+}
+.editar-perfil-page__acoes {
+  display: flex; justify-content: flex-end;
+  gap: 12px; margin-top: 24px;
+}

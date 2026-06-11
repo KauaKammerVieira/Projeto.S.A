@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header/header";
 import LoginCard from "../components/LoginCard/registerCard";
 import Input from "../components/input/input";
 import Button from "../components/Button/Button";
@@ -16,38 +15,42 @@ export default function Cadastro() {
   const [senhaError, setSenhaError] = useState(false);
 
   async function handleCadastrar() {
-  if (senha !== confirmar) {
-    setSenhaError(true);
-    return;
+    if (!nome || !email || !senha || !confirmar) {
+      alert("Preencha todos os campos!");
+      return;
+    }
+
+    if (senha !== confirmar) {
+      setSenhaError(true);
+      return;
+    }
+
+    setSenhaError(false);
+
+    try {
+      const response = await api.post("/auth/cadastro", {
+        nome,
+        email,
+        senha,
+      });
+
+      alert("Cadastro realizado!");
+      navigate("/");
+    } catch (error) {
+      alert(error.response?.data?.message || "Erro ao cadastrar");
+    }
   }
 
-  setSenhaError(false);
-
-  try {
-    const response = await api.post("/auth/cadastro", {
-      nome,
-      email,
-      senha,
-    });
-
-    console.log(response.data);
-
-    alert("Cadastro realizado!");
-    navigate("/");
-  } catch (error) {
-    console.log(error);
-
-    alert(
-      error.response?.data?.message ||
-      "Erro ao cadastrar"
-    );
-  }
-}
   return (
-    <div style={{ minHeight: "100vh", background: "#fff" }}>
-      <Header />
-
+    <div style={{
+      minHeight: "100vh",
+      background: "#f5f6fa",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    }}>
       <LoginCard title="Faça seu cadastro para utilizar a plataforma">
+
         <Input
           label="Nome"
           value={nome}
@@ -81,38 +84,34 @@ export default function Cadastro() {
         />
 
         {senhaError && (
-          <p
-            style={{
-              color: "#e53e3e",
-              fontSize: 12,
-              marginTop: -8,
-              marginBottom: 12,
-            }}
-          >
+          <p style={{
+            color: "#e53e3e",
+            fontSize: 12,
+            marginTop: -8,
+            marginBottom: 12,
+          }}>
             As senhas não coincidem.
           </p>
         )}
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: 12,
-            marginTop: 8,
-          }}
-        >
+        <div style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: 12,
+          marginTop: 8,
+        }}>
           <Button
             label="Voltar"
             onClick={() => navigate("/")}
             variant="secondary"
           />
-
           <Button
             label="Cadastrar"
             onClick={handleCadastrar}
             variant="primary"
           />
         </div>
+
       </LoginCard>
     </div>
   );

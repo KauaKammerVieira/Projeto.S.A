@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header/header";
 import LoginCard from "../components/LoginCard/registerCard";
 import Input from "../components/input/input";
 import Button from "../components/Button/Button";
@@ -14,39 +13,39 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit() {
-  setLoading(true);
+    if (!email || !senha) {
+      alert("Preencha o e-mail e a senha!");
+      return;
+    }
 
-  try {
-    const response = await api.post("/auth/login", {
-      email,
-      senha,
-    });
+    setLoading(true);
 
-    console.log(response.data);
+    try {
+      const response = await api.post("/auth/login", {
+        email,
+        senha,
+      });
 
-    // salva token
-    localStorage.setItem(
-      "token",
-      response.data.token
-    );
+      localStorage.setItem("token", response.data.token);
+      navigate("/home");
 
-    navigate("/home");
-  } catch (error) {
-    console.log(error);
-
-    alert(
-      error.response?.data?.message ||
-      "Login inválido"
-    );
-  } finally {
-    setLoading(false);
+    } catch (error) {
+      alert(error.response?.data?.message || "Login inválido");
+    } finally {
+      setLoading(false);
+    }
   }
-}
-  return (
-    <div style={{ minHeight: "100vh", background: "#fff" }}>
-      <Header />
 
+  return (
+    <div style={{
+      minHeight: "100vh",
+      background: "#f5f6fa",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    }}>
       <LoginCard title="Faça seu login para entrar na plataforma">
+
         <Input
           label="E-mail:"
           type="email"
@@ -63,14 +62,12 @@ export default function Login() {
           placeholder="Digite sua senha"
         />
 
-        <p
-          style={{
-            fontSize: 13,
-            color: "#2563eb",
-            cursor: "pointer",
-            marginBottom: 16,
-          }}
-        >
+        <p style={{
+          fontSize: 13,
+          color: "#f97316",
+          cursor: "pointer",
+          marginBottom: 8,
+        }}>
           Esqueci a senha
         </p>
 
@@ -81,29 +78,31 @@ export default function Login() {
           variant="primary"
         />
 
-        <div
-          style={{
-            textAlign: "center",
-            marginTop: 20,
-            fontSize: 13,
-            color: "#aaa",
-          }}
-        >
-          ——————— Criar conta ———————
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          margin: "16px 0 8px",
+        }}>
+          <span style={{ flex: 1, height: 1, background: "#e5e7eb" }} />
+          <span style={{ fontSize: 12, color: "#9ca3af" }}>Criar conta</span>
+          <span style={{ flex: 1, height: 1, background: "#e5e7eb" }} />
         </div>
 
-        <div style={{ textAlign: "center", marginTop: 8 }}>
+        <div style={{ textAlign: "center" }}>
           <span
             style={{
               fontSize: 13,
-              color: "#2563eb",
+              color: "#1e2a4a",
               cursor: "pointer",
+              textDecoration: "underline",
             }}
             onClick={() => navigate("/cadastro")}
           >
             Cadastre-se
           </span>
         </div>
+
       </LoginCard>
     </div>
   );
