@@ -6,5 +6,9 @@
     "BackEnd": "cd Back_End && npm run start",
     "FrontEnd": "cd Front_End && npm run dev",
     "Start-app": "concurrently \"npm run BackEnd\" \"npm run FrontEnd\""
+  },
+  "dependencies": {
+    "@google/genai": "^2.8.0",
+    "react-markdown": "^10.1.0"
   }
 }
