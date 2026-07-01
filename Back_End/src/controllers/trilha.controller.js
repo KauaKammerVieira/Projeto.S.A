@@ -1,5 +1,5 @@
 import { trilha, planoEstudo, historicoAvaliacao } from "../models/userModels.js";
-import { perguntarGemini } from "../services/geminiService.js"; // Nome correto importado aqui!
+import { perguntarGemini } from "../services/geminiService.js";
 
 export async function gerarAvaliacao(req, res) {
   try {
@@ -7,22 +7,23 @@ export async function gerarAvaliacao(req, res) {
     const prompt = `
       Gere uma prova diagnóstica sobre ${area}.
       A prova deve avaliar se o aluno é Básico, Intermediário ou Avançado.
-      Retorne APENAS um JSON neste formato:
+      Retorne APENAS um JSON neste formato, sem markdown, sem explicações:
       {
         "area": "${area}",
         "questoes": [
           {
             "pergunta": "Texto da pergunta",
-            "alternativas": ["A", "B", "C", "D"],
+            "nivel": "Iniciante",
+            "alternativas": ["A", "B", "C"],
             "respostaCorreta": "A"
           }
         ]
       }
       Gere 10 questões.
     `;
-    // Mudamos de gerarConteudo para perguntarGemini aqui:
-    const respostaIA = await perguntarGemini(prompt); 
-    const avaliacao = JSON.parse(respostaIA);
+    const respostaIA = await perguntarGemini(prompt);
+    const clean = respostaIA.replace(/```json|```/g, "").trim();
+    const avaliacao = JSON.parse(clean);
     return res.status(200).json(avaliacao);
   } catch (error) {
     return res.status(500).json({ mensagem: "Erro ao gerar avaliação", erro: error.message });
@@ -34,26 +35,20 @@ export async function responderAvaliacao(req, res) {
     const { area, respostas } = req.body;
     const prompt = `
       Corrija a avaliação diagnóstica do aluno sobre ${area}.
-      Respostas do aluno:
-      ${JSON.stringify(respostas)}
-      Com base nas respostas:
-      1. Calcule a pontuação de 0 a 10;
-      2. Classifique o aluno como Básico, Intermediário ou Avançado;
-      3. Gere uma trilha personalizada de estudos;
-      4. Gere planos de estudo para essa trilha.
-      Retorne APENAS um JSON neste formato:
+      Respostas do aluno: ${JSON.stringify(respostas)}
+      Retorne APENAS um JSON neste formato, sem markdown, sem explicações:
       {
         "pontuacao": 8,
         "nivelAnterior": "Básico",
         "nivelAtual": "Intermediário",
         "trilha": {
-          "nome": "Trilha de Lógica de Programação",
-          "area": "Lógica de Programação",
+          "nome": "Trilha de ${area}",
+          "area": "${area}",
           "nivelObjetivo": "Avançado",
           "planos": [
             {
-              "titulo": "Variáveis e tipos de dados",
-              "descricao": "Estudar variáveis, tipos primitivos e entrada de dados.",
+              "titulo": "Título do plano",
+              "descricao": "Descrição do plano.",
               "tempoEstimado": "2h",
               "ordem": 1
             }
@@ -61,17 +56,17 @@ export async function responderAvaliacao(req, res) {
         }
       }
     `;
-    // Mudamos de gerarConteudo para perguntarGemini aqui também:
-    const respostaIA = await perguntarGemini(prompt); 
-    const dados = JSON.parse(respostaIA);
-    
+    const respostaIA = await perguntarGemini(prompt);
+    const clean = respostaIA.replace(/```json|```/g, "").trim();
+    const dados = JSON.parse(clean);
+
     const novaTrilha = await trilha.create({
       nome: dados.trilha.nome,
       area: dados.trilha.area,
       nivelAtual: dados.nivelAtual,
       nivelObjetivo: dados.trilha.nivelObjetivo,
       status: "EM_ANDAMENTO",
-      userId: req.user.id,
+      userId: req.usuario.id,
     });
 
     const avaliacao = await historicoAvaliacao.create({
@@ -79,7 +74,7 @@ export async function responderAvaliacao(req, res) {
       nivelAnterior: dados.nivelAnterior,
       nivelAtual: dados.nivelAtual,
       dataAvaliacao: new Date(),
-      userId: req.user.id,
+      userId: req.usuario.id,
       trilhaId: novaTrilha.id,
     });
 
@@ -106,21 +101,15 @@ export async function responderAvaliacao(req, res) {
   }
 }
 
-
 export async function listarTrilhas(req, res) {
   try {
     const trilhas = await trilha.findAll({
-      where: {
-        userId: req.user.id, // Certifique-se de que o id vem do token de autenticação
-      },
-      include: [
-        { model: planoEstudo, as: "planoEstudo" } // Mudamos essa linha para usar o objeto mapeado
-      ],
+      where: { userId: req.usuario.id },
+      include: [{ model: planoEstudo, as: "planoEstudo" }],
     });
     return res.status(200).json(trilhas);
   } catch (error) {
-    console.error("Erro no terminal:", error); // Adicione esse console.log para você ver o erro no terminal se persistir
-    return res.status(500).json({ mensagem: "Erro ao listar as trilhas", erro: error.message }); //
+    return res.status(500).json({ mensagem: "Erro ao listar as trilhas", erro: error.message });
   }
 }
 
@@ -128,7 +117,7 @@ export async function buscarTrilha(req, res) {
   try {
     const { id } = req.params;
     const trilhaEncontrada = await trilha.findOne({
-      where: { id, userId: req.user.id },
+      where: { id, userId: req.usuario.id },
       include: [planoEstudo],
     });
     if (!trilhaEncontrada) return res.status(404).json({ mensagem: "Trilha não encontrada" });
@@ -141,7 +130,7 @@ export async function buscarTrilha(req, res) {
 export async function atualizarTrilha(req, res) {
   try {
     const { id } = req.params;
-    const trilhaEncontrada = await trilha.findOne({ where: { id, userId: req.user.id } });
+    const trilhaEncontrada = await trilha.findOne({ where: { id, userId: req.usuario.id } });
     if (!trilhaEncontrada) return res.status(404).json({ mensagem: "Trilha não encontrada" });
     await trilhaEncontrada.update(req.body);
     return res.status(200).json(trilhaEncontrada);
@@ -153,7 +142,7 @@ export async function atualizarTrilha(req, res) {
 export async function excluirTrilha(req, res) {
   try {
     const { id } = req.params;
-    const trilhaEncontrada = await trilha.findOne({ where: { id, userId: req.user.id } });
+    const trilhaEncontrada = await trilha.findOne({ where: { id, userId: req.usuario.id } });
     if (!trilhaEncontrada) return res.status(404).json({ mensagem: "Trilha não encontrada" });
     await trilhaEncontrada.destroy();
     return res.status(200).json({ mensagem: "Trilha excluída com sucesso" });

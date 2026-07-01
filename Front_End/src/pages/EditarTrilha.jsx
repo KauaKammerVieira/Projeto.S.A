@@ -6,22 +6,40 @@ import Card from "../components/Cards/Card";
 import Button from "../components/Button/Button";
 import PageTitle from "../components/PageTitle/PageTitle";
 import Selects from "../components/Select/Selects";
+import api from "../services/api";
 import "./EditarTrilha.css";
 
 const areasOptions = [
-  { value: "logica", label: "Lógica de programação" },
-  { value: "frontend", label: "Front-end" },
-  { value: "backend", label: "Back-end" },
-  { value: "dados", label: "Dados" },
+  { value: "Lógica de programação", label: "Lógica de programação" },
+  { value: "Front-end", label: "Front-end" },
+  { value: "Back-end", label: "Back-end" },
+  { value: "Dados", label: "Dados" },
 ];
 
 const EditarTrilha = () => {
-  const [area, setArea] = useState("logica");
+  const navigate = useNavigate();
+  const [area, setArea] = useState("Lógica de programação");
   const [nivel, setNivel] = useState("");
+  const [salvando, setSalvando] = useState(false);
+  const [erro, setErro] = useState("");
+  const [sucesso, setSucesso] = useState("");
 
-  const handleSalvar = () => {
-    console.log({ area, nivel });
-    alert("Trilha salva com sucesso!");
+  const handleSalvar = async () => {
+    if (!nivel) {
+      setErro("Selecione um nível de conhecimento.");
+      return;
+    }
+    setSalvando(true);
+    setErro("");
+    setSucesso("");
+    try {
+      await api.post("/trilhas", { area, nivelAtual: nivel, nome: `Trilha de ${area}`, nivelObjetivo: "Avançado", status: "EM_ANDAMENTO" });
+      setSucesso("Trilha salva com sucesso!");
+    } catch (e) {
+      setErro(e.response?.data?.mensagem || "Erro ao salvar trilha.");
+    } finally {
+      setSalvando(false);
+    }
   };
 
   return (
@@ -35,7 +53,9 @@ const EditarTrilha = () => {
           <Card>
             <h2 className="editar-trilha-page__section-title">
               Área de Aprendizado
-              <Button variant="primary">Adicionar Nova</Button>
+              <Button variant="primary" onClick={() => navigate("/avaliacao-nivel", { state: { area } })}>
+                Adicionar Nova
+              </Button>
             </h2>
 
             <div className="editar-trilha-page__field">
@@ -49,7 +69,12 @@ const EditarTrilha = () => {
 
             <div className="editar-trilha-page__field">
               <p className="editar-trilha-page__label">Nível de Conhecimento</p>
-              <Button variant="primary">Adicionar Nível</Button>
+              <Button
+                variant="primary"
+                onClick={() => navigate("/avaliacao-nivel", { state: { area } })}
+              >
+                Verificar Nível
+              </Button>
 
               <div className="editar-trilha-page__nivel-btns">
                 {["Iniciante", "Intermediário", "Avançado"].map((n) => (
@@ -63,6 +88,9 @@ const EditarTrilha = () => {
                 ))}
               </div>
             </div>
+
+            {erro && <p style={{ color: "red", fontSize: 13, marginTop: 8 }}>{erro}</p>}
+            {sucesso && <p style={{ color: "green", fontSize: 13, marginTop: 8 }}>{sucesso}</p>}
           </Card>
 
           <Card>
@@ -73,8 +101,10 @@ const EditarTrilha = () => {
         </div>
 
         <div className="editar-trilha-page__acoes">
-          <Button variant="secondary">Voltar</Button>
-          <Button variant="primary" onClick={handleSalvar}>Salvar</Button>
+          <Button variant="secondary" onClick={() => navigate(-1)}>Voltar</Button>
+          <Button variant="primary" onClick={handleSalvar} disabled={salvando}>
+            {salvando ? "Salvando..." : "Salvar"}
+          </Button>
         </div>
       </main>
     </div>

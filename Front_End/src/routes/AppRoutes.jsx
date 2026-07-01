@@ -8,6 +8,7 @@ import EditarPerfil from "../pages/EditarPerfil";
 import AlterarSenha from "../pages/AlterarSenha";
 import VerificarNivel from "../pages/VerificarNivel";
 import Trilhas from "../pages/Trilhas";
+import AvaliacaoNivel from "../pages/AvaliacaoNivel"
 
 export default function AppRoutes() {
   return (
@@ -22,6 +23,7 @@ export default function AppRoutes() {
         <Route path="/editar-perfil" element={<EditarPerfil />} />
         <Route path="/alterar-senha" element={<AlterarSenha />} />
         <Route path="/verificar-nivel" element={<VerificarNivel />} />
+        <Route path="/avaliacao-nivel" element={<AvaliacaoNivel />} />
       </Routes>
     </BrowserRouter>
   );
